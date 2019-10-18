@@ -5,10 +5,11 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Text,
+  FlatList,
   View
 } from "react-native";
 import * as Constants from "../components/Constants";
-
+import { ListItem } from "react-native-elements";
 class Details extends React.Component {
   constructor() {
     super();
@@ -18,6 +19,7 @@ class Details extends React.Component {
       isRefreshing: false
     };
   }
+
   configureInputParam = () => {
     let inputParam = { ...Constants.PARAM_FUNDDETAILS };
     const { params } = this.props.navigation.state;
@@ -88,10 +90,19 @@ class Details extends React.Component {
   componentDidMount() {
     this.getFundPrices();
   }
-
-  render() {
+  _renderItem = ({ item }) => {
     const { navigate } = this.props.navigation;
 
+    return (
+      <ListItem
+        key={item.Name}
+        title={item.Name}
+        onPress={() => navigate("FundDetails", { URL: item.Url })}
+      />
+    );
+  };
+
+  render() {
     if (this.state.isLoading && this.state.data.length === 0) {
       return (
         <View style={{ padding: 20 }}>
@@ -102,7 +113,22 @@ class Details extends React.Component {
     return (
       //TODO: Use SelectList
       <ScrollView style={styles.scrollView}>
-        {this.state.data.map((item, key) => (
+        <FlatList
+          ItemSeparatorComponent={() => (
+            <View
+              style={{
+                height: 1,
+                marginHorizontal: 15,
+                backgroundColor: "#CED0CE"
+              }}
+            />
+          )}
+          data={this.state.data}
+          renderItem={this._renderItem}
+          keyExtractor={item => item.ID}
+          onEndReachedThreshold={0.4}
+        />
+        {/* {this.state.data.map((item, key) => (
           <TouchableOpacity
             key={key}
             onPress={() => navigate("FundDetails", { URL: item.Url })}
@@ -122,7 +148,7 @@ class Details extends React.Component {
               AMCPerCent - {item.AMCPerCent}{" "}
             </Text>
           </TouchableOpacity>
-        ))}
+        ))} */}
       </ScrollView>
     );
   }
@@ -131,7 +157,9 @@ export default Details;
 
 const styles = StyleSheet.create({
   scrollView: {
-    flex: 1
+    flex: 1,
+    //backgroundColor: "#1a9ce3",
+    color: "white"
     //justifyContent: "center"
   }
 });

@@ -10,6 +10,7 @@ import {
   RefreshControl,
   SafeAreaView
 } from "react-native";
+import { ListItem } from "react-native-elements";
 
 class FundList extends Component {
   constructor() {
@@ -56,7 +57,7 @@ class FundList extends Component {
         let data = !this.state.isRefreshing
           ? listData.concat(responseJson.Content.Products)
           : listData;
-
+        // console.log(listData);
         this.setState(
           {
             isLoading: false,
@@ -97,23 +98,59 @@ class FundList extends Component {
   };
   _renderItem = ({ item }) => {
     return (
-      <TouchableHighlight
+      <ListItem
+        containerStyle={{
+          backgroundColor: "#eff7fc",
+          borderColor: "#ccc",
+          borderWidth: 1,
+          borderRadius: 8,
+          margin: 5
+        }}
+        leftAvatar={{
+          rounded: true,
+          source: require("../assets/fund-icon.jpg")
+        }}
+        key={item.Name}
+        title={item.Name}
+        titleStyle={{ color: "black" }}
+        subtitle={item.AssetClassName}
+        subtitleStyle={{ color: "#002664" }}
         onPress={() =>
           this.props.navigation.navigate("Details", { item: item })
         }
-      >
-        <View style={styles.item}>
-          <Text style={styles.title}>{item.Name}</Text>
-        </View>
-      </TouchableHighlight>
+        chevron
+        badge={{
+          badgeStyle: {
+            backgroundColor: "#fff",
+            height: 20,
+            borderStyle: "solid",
+            borderColor: "#c4e2f4",
+            borderWidth: 1
+          },
+          value: item.ProductShareclassesLinks.length,
+          textStyle: {
+            color: "#999",
+            paddingHorizontal: 10
+          },
+          containerStyle: {
+            //marginTop: -30
+          }
+        }}
+      />
     );
   };
   render() {
     if (this.state.isLoading && this.page === 0) {
       return (
         <SafeAreaView style={{ flex: 1 }}>
-          <View style={{ padding: 20 }}>
-            <ActivityIndicator />
+          <View
+            style={{
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+          >
+            <ActivityIndicator size="large" color="red" />
           </View>
         </SafeAreaView>
       );
@@ -125,15 +162,15 @@ class FundList extends Component {
           {this.state.totalCount} results.
         </Text>
         <FlatList
-          ItemSeparatorComponent={() => (
-            <View
-              style={{
-                height: 1,
-                marginHorizontal: 15,
-                backgroundColor: "#CED0CE"
-              }}
-            />
-          )}
+          // ItemSeparatorComponent={() => (
+          //   <View
+          //     style={{
+          //       height: 1,
+          //       marginHorizontal: 15,
+          //       backgroundColor: "#CED0CE"
+          //     }}
+          //   />
+          // )}
           data={this.state.data}
           renderItem={this._renderItem}
           keyExtractor={item => item.ID}
