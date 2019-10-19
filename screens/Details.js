@@ -4,12 +4,12 @@ import {
   ScrollView,
   ActivityIndicator,
   TouchableOpacity,
-  Text,
   FlatList,
+  SafeAreaView,
   View
 } from "react-native";
 import * as Constants from "../components/Constants";
-import { ListItem, Card, Icon, Button } from "react-native-elements";
+import { ListItem, Card, Icon, Button, Text } from "react-native-elements";
 import Moment from "moment";
 
 class Details extends React.Component {
@@ -78,12 +78,12 @@ class Details extends React.Component {
     let listData = [];
     // console.log("Length response - " + responseJson.Shareclasses.length);
     for (var i = 0; i < responseJson.Shareclasses.length; i++) {
-      var data = JSON.parse(responseJson.Shareclasses[i]).Content[0];
-      listData.push(data);
+      var shareclass = JSON.parse(responseJson.Shareclasses[i]).Content[0];
+      var documents = responseJson.Documents[shareclass.ID];
+      listData.push({ shareclass, documents });
 
-      // console.log("Item- -- -- --" + i);
-      // console.log(data);
-      //console.log(data);
+      console.log("Item- -- -- --" + i);
+      console.log(listData[i]);
     }
     console.log("Object Length -- " + listData.length);
     //console.log(listData);
@@ -99,47 +99,62 @@ class Details extends React.Component {
       <View>
         <Card
           containerStyle={{ flex: 1, borderRadius: 8 }}
-          title={item.Name}
+          title={item.shareclass.Name}
           titleStyle={{ alignSelf: "flex-start", marginLeft: 10 }}
           image={require("../assets/fund-icon.jpg")}
         >
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              justifyContent: "space-evenly"
-            }}
-          >
-            <View style={{ flex: 1, marginBottom: 10 }}>
-              <Text>
-                {" "}
-                Price{" "}
-                {item.Prices[0].PricePerUnit +
-                  " " +
-                  item.ShareclassCurrencyCode}
-              </Text>
+          <View>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                justifyContent: "space-evenly"
+              }}
+            >
+              <View style={{ flex: 1, marginBottom: 10 }}>
+                <Text>
+                  {" "}
+                  Price{" "}
+                  {item.shareclass.Prices[0].PricePerUnit +
+                    " " +
+                    item.shareclass.ShareclassCurrencyCode}
+                </Text>
+              </View>
+              <View style={{ flex: 1, marginBottom: 10 }}>
+                <Text>
+                  {" "}
+                  Price Date{" "}
+                  {Moment(item.shareclass.Prices[0].LastSuccessfulSync).format(
+                    "DD MMM YYYY"
+                  )}
+                </Text>
+              </View>
             </View>
-            <View style={{ flex: 1, marginBottom: 10 }}>
-              <Text> Price Date {item.Prices[0].LastSuccessfulSync}</Text>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                justifyContent: "space-evenly"
+              }}
+            >
+              <View style={{ flex: 1, marginBottom: 10 }}>
+                <Text>
+                  {" "}
+                  Price Change {item.shareclass.Prices[0].ChangeValue}
+                </Text>
+              </View>
             </View>
           </View>
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              justifyContent: "space-evenly"
-            }}
-          >
-            <View style={{ flex: 1, marginBottom: 10 }}>
-              <Text>
-                {" "}
-                Price Date{" "}
-                {Moment(item.Prices[0].LastSuccessfulSync).format(
-                  "dd MMM YYYY"
-                )}
-              </Text>
-            </View>
-          </View>
+          {/* <View>
+            {item.documents && <Text h4> Related Literatures</Text>}
+
+            {item.documents &&
+              item.documents.map((doc, i) => (
+                <View key={i}>
+                  <Text>{doc.Type}</Text>
+                </View>
+              ))}
+          </View> */}
           <Button
             icon={<Icon name="code" color="#ffffff" />}
             buttonStyle={{
@@ -148,7 +163,9 @@ class Details extends React.Component {
               marginRight: 0,
               marginBottom: 0
             }}
-            onPress={() => navigate("FundDetails", { URL: item.Url })}
+            onPress={() =>
+              navigate("FundDetails", { URL: item.shareclass.Url })
+            }
             title="VIEW NOW"
           />
         </Card>
@@ -159,51 +176,28 @@ class Details extends React.Component {
   render() {
     if (this.state.isLoading && this.state.data.length === 0) {
       return (
-        <View style={{ padding: 20 }}>
-          <ActivityIndicator />
+        <View>
+          <Text h4 style={{ margin: 10 }}>
+            {this.props.navigation.state.params.item.Name}
+          </Text>
+          <ActivityIndicator style={{ marginTop: 20 }} />
         </View>
       );
     }
     return (
-      //TODO: Use SelectList
-      <ScrollView style={styles.scrollView}>
-        <FlatList
-          ItemSeparatorComponent={() => (
-            <View
-              style={{
-                height: 1,
-                marginHorizontal: 15,
-                backgroundColor: "#CED0CE"
-              }}
-            />
-          )}
-          data={this.state.data}
-          renderItem={this._renderItem}
-          keyExtractor={item => item.ID}
-          onEndReachedThreshold={0.4}
-        />
-        {/* {this.state.data.map((item, key) => (
-          <TouchableOpacity
-            key={key}
-            onPress={() => navigate("FundDetails", { URL: item.Url })}
-          >
-            <Text style={{ fontSize: 20 }}> Shareclasse - {item.Name} </Text>
-            <View
-              style={{
-                borderBottomColor: "black",
-                marginRight: 60,
-                borderBottomWidth: 1
-              }}
-            />
-            <Text> Price - {item.Prices[0].PricePerUnit} </Text>
-            <Text> Currency - {item.ShareclassCurrencyCode} </Text>
-            <Text style={{ marginBottom: 20 }}>
-              {" "}
-              AMCPerCent - {item.AMCPerCent}{" "}
-            </Text>
-          </TouchableOpacity>
-        ))} */}
-      </ScrollView>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView style={styles.scrollView}>
+          <Text h4 style={{ margin: 10 }}>
+            {this.props.navigation.state.params.item.Name}
+          </Text>
+          <FlatList
+            data={this.state.data}
+            renderItem={this._renderItem}
+            keyExtractor={item => item.shareclass.ID}
+            onEndReachedThreshold={0.4}
+          />
+        </ScrollView>
+      </SafeAreaView>
     );
   }
 }
