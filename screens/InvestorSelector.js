@@ -1,18 +1,47 @@
 import React, { Component } from "react";
 import * as Constants from "../components/Constants";
-import { View, Text, SafeAreaView, StyleSheet } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  StyleSheet,
+  ActivityIndicator
+} from "react-native";
 import ModalDropdown from "react-native-modal-dropdown";
 import { Button } from "react-native-elements";
+import { AsyncStorage } from "react-native";
 
 class InvestorSelector extends Component {
   constructor(props) {
     super(props);
+    this.checkIsFirstTime();
     this.state = {
       showInvestorType: false,
       showLanguage: false,
-      allChecked: false
+      allChecked: false,
+      isloading: true
     };
+  }
+  async checkIsFirstTime() {
+    try {
+      const value = await AsyncStorage.getItem("IsFirstTimeUser");
+      if (value !== null) {
+        console.log(value);
+        if (value == "false") {
+          this.props.navigation.navigate("Home");
+        } else {
+          this.setState({
+            isloading: false
+          });
+        }
+        // value previously stored
+      }
+    } catch (e) {
+      // error reading value
+      alert("Error getting data from Async Storage");
+    }
+    //console.log(this.getData("IsFirstTimeUser"));
+    console.log("afsaf");
   }
   _renderRow = (option, index, isSelected) => {
     return (
@@ -22,7 +51,6 @@ class InvestorSelector extends Component {
     );
   };
   onSelect = (index, option) => {
-    //  alert(value);
     this.setState({
       showInvestorType: true
     });
@@ -38,8 +66,33 @@ class InvestorSelector extends Component {
     this.setState({
       allChecked: true
     });
+    this.storeData("IsFirstTimeUser", "false");
+  };
+  storeData = async (key, value) => {
+    try {
+      await AsyncStorage.setItem(key, value);
+    } catch (e) {
+      // saving error
+      alert("Error getting data from Async Storage");
+    }
+  };
+  getData = async key => {
+    try {
+      const value = await AsyncStorage.getItem(key);
+      if (value !== null) {
+        console.log(value);
+        return value;
+        // value previously stored
+      }
+    } catch (e) {
+      // error reading value
+      alert("Error getting data from Async Storage");
+    }
   };
   render() {
+    if (this.state.isloading) {
+      return <ActivityIndicator style={{ padding: 20, color: "#000" }} />;
+    }
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "#199ce3" }}>
         <View style={styles.container}>
