@@ -24,7 +24,7 @@ const RootStack = createStackNavigator(
     Details: {
       screen: Details,
       navigationOptions: {
-        headerTitle: "Fund Prices"
+        headerTitle: "Shareclass"
       }
     }
   },
