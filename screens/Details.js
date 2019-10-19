@@ -164,7 +164,10 @@ class Details extends React.Component {
               marginBottom: 0
             }}
             onPress={() =>
-              navigate("FundDetails", { URL: item.shareclass.Url })
+              navigate("FundDetails", {
+                URL: item.shareclass.Url,
+                title: item.shareclass.Name
+              })
             }
             title="VIEW NOW"
           />

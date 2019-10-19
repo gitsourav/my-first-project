@@ -10,7 +10,7 @@ import {
   RefreshControl,
   SafeAreaView
 } from "react-native";
-import { ListItem } from "react-native-elements";
+import { ListItem, SearchBar } from "react-native-elements";
 
 class FundList extends Component {
   constructor() {
@@ -22,8 +22,10 @@ class FundList extends Component {
       totalCount: 0,
       loadedCount: 0,
       page: 0,
-      isRefreshing: false
+      isRefreshing: false,
+      value: ""
     };
+    this.arrayholder = [];
   }
 
   componentDidMount() {
@@ -57,6 +59,7 @@ class FundList extends Component {
         let data = !this.state.isRefreshing
           ? listData.concat(responseJson.Content.Products)
           : listData;
+
         // console.log(listData);
         this.setState(
           {
@@ -68,6 +71,7 @@ class FundList extends Component {
           function() {
             // call the function to pull initial 12 records
             //this.addRecords(0);
+            this.arrayholder = data;
           }
         );
       })
@@ -82,14 +86,17 @@ class FundList extends Component {
 
   handleLoadMore = () => {
     if (!this.state.isLoading) {
-      this.page = this.page + 1;
-      this.getFundData(this.page);
+      if (Object.keys(this.state.data).length < this.state.totalCount) {
+        this.page = this.page + 1;
+        this.getFundData(this.page);
+      }
     }
   };
 
   onRefresh = () => {
     this.setState({ isRefreshing: true });
-    this.getFundData(this.page);
+    this.getFundData(0);
+    //this.getFundData(this.page);
   };
   renderFooter = () => {
     //it will show indicator at the bottom of the list when data is loading otherwise it returns null
@@ -140,6 +147,34 @@ class FundList extends Component {
       />
     );
   };
+  renderHeader = () => {
+    return (
+      <SearchBar
+        placeholder="Type Here..."
+        lightTheme
+        round
+        onChangeText={text => this.searchFilterFunction(text)}
+        autoCorrect={false}
+        value={this.state.value}
+      />
+    );
+  };
+  searchFilterFunction = text => {
+    this.setState({
+      value: text
+    });
+    console.log(text);
+
+    const newData = this.arrayholder.filter(item => {
+      const itemData = `${item.Name.toUpperCase()}`;
+
+      const textData = text.toUpperCase();
+
+      return itemData.indexOf(textData) > -1;
+    });
+
+    this.setState({ data: newData });
+  };
   render() {
     if (this.state.isLoading && this.page === 0) {
       return (
@@ -158,7 +193,7 @@ class FundList extends Component {
     }
     return (
       <SafeAreaView style={{ flex: 1 }}>
-        <Text style={styles.countLable}>
+        <Text style={[styles.countLable, { margin: 5 }]}>
           Showing {Object.keys(this.state.data).length} of{" "}
           {this.state.totalCount} results.
         </Text>
@@ -172,10 +207,12 @@ class FundList extends Component {
           //     }}
           //   />
           // )}
+
           data={this.state.data}
           renderItem={this._renderItem}
           keyExtractor={item => item.ID}
           ListFooterComponent={this.renderFooter.bind(this)}
+          ListHeaderComponent={this.renderHeader.bind(this)}
           refreshControl={
             <RefreshControl
               refreshing={this.state.isRefreshing}

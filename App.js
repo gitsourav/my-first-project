@@ -8,9 +8,16 @@ import Constants from "expo-constants";
 import FundList from "./screens/FundList";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
+import InvestorSelector from "./screens/InvestorSelector";
 
 const RootStack = createStackNavigator(
   {
+    InvestorSelector: {
+      screen: InvestorSelector,
+      navigationOptions: {
+        header: null
+      }
+    },
     Home: {
       screen: FundList,
       navigationOptions: {
@@ -29,7 +36,7 @@ const RootStack = createStackNavigator(
     }
   },
   {
-    initialRouteName: "Home",
+    initialRouteName: "InvestorSelector",
     headerMode: "screen",
     headerForceInset: { top: "never" }
   }

@@ -4,7 +4,13 @@ import { WebView } from "react-native-webview";
 import { ListItem } from "react-native-elements";
 
 class FundDetails extends React.Component {
-  state = {};
+  static navigationOptions = ({ navigation }) => ({
+    title: `${navigation.state.params.title}`,
+    headerTitleStyle: { textAlign: "center", alignSelf: "center" },
+    headerStyle: {
+      backgroundColor: "white"
+    }
+  });
 
   componentDidMount() {}
   displaySpinner() {
