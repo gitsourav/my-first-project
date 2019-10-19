@@ -9,7 +9,9 @@ import {
   View
 } from "react-native";
 import * as Constants from "../components/Constants";
-import { ListItem } from "react-native-elements";
+import { ListItem, Card, Icon, Button } from "react-native-elements";
+import Moment from "moment";
+
 class Details extends React.Component {
   constructor() {
     super();
@@ -54,8 +56,8 @@ class Details extends React.Component {
     )
       .then(response => response.json())
       .then(responseJson => {
-        console.log("Respones JSON");
-        console.log(responseJson);
+        //console.log("Respones JSON");
+        //console.log(responseJson);
         let listData = this.processJSON(responseJson);
         //console.log(listData);
         this.setState({
@@ -92,13 +94,65 @@ class Details extends React.Component {
   }
   _renderItem = ({ item }) => {
     const { navigate } = this.props.navigation;
-
+    Moment.locale("en");
     return (
-      <ListItem
-        key={item.Name}
-        title={item.Name}
-        onPress={() => navigate("FundDetails", { URL: item.Url })}
-      />
+      <View>
+        <Card
+          containerStyle={{ flex: 1, borderRadius: 8 }}
+          title={item.Name}
+          titleStyle={{ alignSelf: "flex-start", marginLeft: 10 }}
+          image={require("../assets/fund-icon.jpg")}
+        >
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "space-evenly"
+            }}
+          >
+            <View style={{ flex: 1, marginBottom: 10 }}>
+              <Text>
+                {" "}
+                Price{" "}
+                {item.Prices[0].PricePerUnit +
+                  " " +
+                  item.ShareclassCurrencyCode}
+              </Text>
+            </View>
+            <View style={{ flex: 1, marginBottom: 10 }}>
+              <Text> Price Date {item.Prices[0].LastSuccessfulSync}</Text>
+            </View>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "space-evenly"
+            }}
+          >
+            <View style={{ flex: 1, marginBottom: 10 }}>
+              <Text>
+                {" "}
+                Price Date{" "}
+                {Moment(item.Prices[0].LastSuccessfulSync).format(
+                  "dd MMM YYYY"
+                )}
+              </Text>
+            </View>
+          </View>
+          <Button
+            icon={<Icon name="code" color="#ffffff" />}
+            buttonStyle={{
+              borderRadius: 5,
+              marginLeft: 0,
+              marginRight: 0,
+              marginBottom: 0
+            }}
+            onPress={() => navigate("FundDetails", { URL: item.Url })}
+            title="VIEW NOW"
+          />
+        </Card>
+      </View>
     );
   };
 

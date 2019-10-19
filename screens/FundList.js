@@ -35,8 +35,8 @@ class FundList extends Component {
     //console.log(page);
     const inputParam = {
       ...Constants.PARAM_GETFUND,
-      top: 20,
-      skip: Number.parseInt(page * 20)
+      top: 100,
+      skip: Number.parseInt(page * 100)
     };
     //console.log(inputParam);
     this.setState({ isLoading: true });
@@ -104,7 +104,8 @@ class FundList extends Component {
           borderColor: "#ccc",
           borderWidth: 1,
           borderRadius: 8,
-          margin: 5
+          margin: 5,
+          marginHorizontal: 10
         }}
         leftAvatar={{
           rounded: true,
