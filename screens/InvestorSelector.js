@@ -10,7 +10,7 @@ import {
 import ModalDropdown from "react-native-modal-dropdown";
 import { Button } from "react-native-elements";
 import { AsyncStorage } from "react-native";
-
+console.log("here");
 class InvestorSelector extends Component {
   constructor(props) {
     super(props);
@@ -90,6 +90,7 @@ class InvestorSelector extends Component {
     }
   };
   render() {
+    console.log("Renderkalfkasdf");
     if (this.state.isloading) {
       return <ActivityIndicator style={{ padding: 20, color: "#000" }} />;
     }

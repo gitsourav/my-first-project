@@ -1,6 +1,5 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import TestList from "./screens/TestList";
 import Home from "./screens/Home";
 import FundDetails from "./screens/FundDetails";
 import Details from "./screens/Details";
@@ -8,9 +7,12 @@ import Constants from "expo-constants";
 import FundList from "./screens/FundList";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
+import { createBottomTabNavigator } from "react-navigation-tabs";
 import InvestorSelector from "./screens/InvestorSelector";
+import Settings from "./screens/Settings";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
-const RootStack = createStackNavigator(
+const HomeStack = createStackNavigator(
   {
     InvestorSelector: {
       screen: InvestorSelector,
@@ -36,12 +38,29 @@ const RootStack = createStackNavigator(
     }
   },
   {
-    initialRouteName: "InvestorSelector",
+    initialRouteName: "Home",
     headerMode: "screen",
     headerForceInset: { top: "never" }
   }
 );
-const AppContainer = createAppContainer(RootStack);
+const SettingsStack = createStackNavigator({
+  Settings: Settings
+});
+
+const AppContainer = createAppContainer(
+  createBottomTabNavigator(
+    {
+      Home: HomeStack,
+      Settings: SettingsStack
+    },
+    {
+      tabBarOptions: {
+        activeTintColor: "tomato",
+        inactiveTintColor: "gray"
+      }
+    }
+  )
+);
 
 export default class App extends React.Component {
   render() {
