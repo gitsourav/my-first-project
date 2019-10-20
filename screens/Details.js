@@ -41,7 +41,7 @@ class Details extends React.Component {
   };
   getFundPrices = () => {
     const inputParam = this.configureInputParam();
-    console.log(inputParam);
+    //console.log(inputParam);
     this.setState({ isLoading: true });
     fetch(
       "https://www.aberdeenstandard.com/en/uk/adviser/funds/funds/shareclassesajax",
@@ -83,7 +83,7 @@ class Details extends React.Component {
       listData.push({ shareclass, documents });
 
       console.log("Item- -- -- --" + i);
-      console.log(listData[i]);
+      // console.log(listData[i]);
     }
     console.log("Object Length -- " + listData.length);
     //console.log(listData);

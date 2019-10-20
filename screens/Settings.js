@@ -1,6 +1,15 @@
 import React from "react";
 import { Text, View, StyleSheet } from "react-native";
 import { ListItem } from "react-native-elements";
+//https://ide.appitr.com/ide/2216-lonely-addition
+
+const ORANGE = "#FF9500";
+const BLUE = "#007AFF";
+const GREEN = "#4CD964";
+const RED = "#FF3B30";
+const GREY = "#8E8E93";
+const PURPLE = "#5856D6";
+const TEAL_BLUE = "#5AC8FA";
 
 class Settings extends React.Component {
   siteSettings = [
@@ -8,8 +17,9 @@ class Settings extends React.Component {
       title: "Country",
       icon: "web",
       type: "foundation",
+      backgroundColor: GREEN,
+      rightTitle: "United Kingdom",
       onPress: () => {
-        //alert("j");
         this.props.navigation.navigate("InvestorSelector", {
           fromSetting: true
         });
@@ -19,8 +29,9 @@ class Settings extends React.Component {
       title: "Language",
       icon: "language",
       type: "font-awesome",
+      backgroundColor: BLUE,
+      rightTitle: "English",
       onPress: () => {
-        //alert("j");
         this.props.navigation.navigate("Home");
       }
     },
@@ -28,8 +39,9 @@ class Settings extends React.Component {
       title: "Investor Type",
       icon: "md-people",
       type: "ionicon",
+      backgroundColor: PURPLE,
+      rightTitle: "Investor",
       onPress: () => {
-        //alert("j");
         this.props.navigation.navigate("Home");
       }
     }
@@ -39,7 +51,10 @@ class Settings extends React.Component {
     {
       title: "Face ID",
       icon: "face-recognition",
-      type: "material-community"
+      type: "material-community",
+      backgroundColor: GREY,
+      checkbox: true,
+      hideChevron: true
     }
   ];
   static navigationOptions = ({ navigation }) => ({
@@ -62,7 +77,21 @@ class Settings extends React.Component {
             <ListItem
               key={i}
               title={item.title}
-              leftIcon={{ name: item.icon, type: item.type, color: "#00aced" }}
+              leftIcon={{
+                name: item.icon,
+                type: item.type,
+                color: "white",
+                containerStyle: {
+                  backgroundColor: item.backgroundColor,
+                  width: 28,
+                  height: 28,
+                  borderRadius: 6,
+                  alignItems: "center",
+                  justifyContent: "center"
+                }
+              }}
+              rightTitle={item.rightTitle}
+              rightTitleStyle={{ width: 250, textAlign: "right" }}
               onPress={() => item.onPress()}
               bottomDivider
               chevron
@@ -76,6 +105,8 @@ class Settings extends React.Component {
               title={item.title}
               leftIcon={{ name: item.icon, type: item.type, color: "#00aced" }}
               bottomDivider
+              switch={item.checkbox && { value: true }}
+              chevron={!item.hideChevron}
             />
           ))}
         </View>

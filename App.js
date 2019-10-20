@@ -12,6 +12,7 @@ import { createDrawerNavigator } from "react-navigation-drawer";
 import InvestorSelector from "./screens/InvestorSelector";
 import Settings from "./screens/Settings";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { Icon } from "react-native-elements";
 import * as AsyncStore from "./utility/util";
 //https://snack.expo.io/@spencercarli/complex-react-navigation-example
 const AuthStack = createStackNavigator({
@@ -57,13 +58,15 @@ const MainTabs = createBottomTabNavigator({
   Home: {
     screen: HomeStack,
     navigationOptions: {
-      tabBarLabel: "Home"
+      tabBarLabel: "Home",
+      tabBarIcon: () => <Icon name="home" size={20} />
     }
   },
   Settings: {
     screen: SettingsStack,
     navigationOptions: {
-      tabBarLabel: "Settings"
+      tabBarLabel: "Settings",
+      tabBarIcon: () => <Icon name="list" size={20} />
     }
   }
 });

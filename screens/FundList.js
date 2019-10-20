@@ -65,7 +65,7 @@ class FundList extends Component {
         let data = !this.state.isRefreshing
           ? listData.concat(responseJson.Content.Products)
           : listData;
-        this.arrayholder = this.state.data;
+
         // console.log(listData);
         if (this._isMounted) {
           this.setState(
@@ -86,6 +86,7 @@ class FundList extends Component {
               }
             }
           );
+          this.arrayholder = this.state.data;
         }
       })
       .catch(error => {
@@ -120,6 +121,7 @@ class FundList extends Component {
     return (
       <ListItem
         containerStyle={{
+          flex: 1,
           backgroundColor: "#eff7fc",
           borderColor: "#ccc",
           borderWidth: 1,
@@ -133,9 +135,14 @@ class FundList extends Component {
         }}
         key={item.Name}
         title={item.Name}
-        titleStyle={{ color: "black" }}
+        titleStyle={{ color: "black", width: 200 }}
         subtitle={item.AssetClassName}
         subtitleStyle={{ color: "#002664" }}
+        rightTitle="Test"
+        rightTitleStyle={{
+          marginTop: -30
+        }}
+        rightSubtitle="Test Sub"
         onPress={() =>
           this.props.navigation.navigate("Details", { item: item })
         }
@@ -230,6 +237,9 @@ class FundList extends Component {
             data={this.state.data}
             renderItem={this._renderItem}
             keyExtractor={item => item.ID}
+            initialNumToRender={10}
+            maxToRenderPerBatch={10}
+            windowSize={10}
             //ListFooterComponent={this.renderFooter.bind(this)}
             //ListHeaderComponent={this.renderHeader.bind(this)}
             // refreshControl={
