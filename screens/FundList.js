@@ -11,8 +11,10 @@ import {
   SafeAreaView
 } from "react-native";
 import { ListItem, SearchBar } from "react-native-elements";
+import { ScrollView } from "react-native-gesture-handler";
 
 class FundList extends Component {
+  _isMounted = false;
   constructor() {
     super();
     this.page = 0;
@@ -29,10 +31,14 @@ class FundList extends Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     console.log("page Mount " + this.page);
     this.getFundData(this.page);
   }
-
+  componentWillUnmount() {
+    console.log("Fund List unmounted");
+    this._isMounted = false;
+  }
   getFundData = page => {
     //console.log(page);
     const inputParam = {
@@ -59,21 +65,28 @@ class FundList extends Component {
         let data = !this.state.isRefreshing
           ? listData.concat(responseJson.Content.Products)
           : listData;
-
+        this.arrayholder = this.state.data;
         // console.log(listData);
-        this.setState(
-          {
-            isLoading: false,
-            isRefreshing: false,
-            totalCount: responseJson.Total,
-            data: data
-          },
-          function() {
-            // call the function to pull initial 12 records
-            //this.addRecords(0);
-            this.arrayholder = data;
-          }
-        );
+        if (this._isMounted) {
+          this.setState(
+            {
+              isLoading: false,
+              isRefreshing: false,
+              totalCount: responseJson.Total,
+              data: data
+            },
+
+            function() {
+              if (
+                Number.parseInt(this.state.totalCount) >
+                Object.keys(this.state.data).length
+              ) {
+                this.page = this.page + 1;
+                this.getFundData(this.page);
+              }
+            }
+          );
+        }
       })
       .catch(error => {
         this.setState({
@@ -164,6 +177,10 @@ class FundList extends Component {
       value: text
     });
     console.log(text);
+    if (text === "") {
+      this.setState({ data: this.arrayholder });
+      return;
+    }
 
     const newData = this.arrayholder.filter(item => {
       const itemData = `${item.Name.toUpperCase()}`;
@@ -193,35 +210,38 @@ class FundList extends Component {
     }
     return (
       <SafeAreaView style={{ flex: 1 }}>
-        <Text style={[styles.countLable, { margin: 5 }]}>
-          Showing {Object.keys(this.state.data).length} of{" "}
-          {this.state.totalCount} results.
-        </Text>
-        <FlatList
-          // ItemSeparatorComponent={() => (
-          //   <View
-          //     style={{
-          //       height: 1,
-          //       marginHorizontal: 15,
-          //       backgroundColor: "#CED0CE"
-          //     }}
-          //   />
-          // )}
+        <ScrollView>
+          {this.renderHeader()}
+          <Text style={[styles.countLable, { margin: 5 }]}>
+            Showing {Object.keys(this.state.data).length} of{" "}
+            {this.state.totalCount} results.
+          </Text>
+          <FlatList
+            // ItemSeparatorComponent={() => (
+            //   <View
+            //     style={{
+            //       height: 1,
+            //       marginHorizontal: 15,
+            //       backgroundColor: "#CED0CE"
+            //     }}
+            //   />
+            // )}
 
-          data={this.state.data}
-          renderItem={this._renderItem}
-          keyExtractor={item => item.ID}
-          ListFooterComponent={this.renderFooter.bind(this)}
-          ListHeaderComponent={this.renderHeader.bind(this)}
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.isRefreshing}
-              onRefresh={this.onRefresh.bind(this)}
-            />
-          }
-          onEndReachedThreshold={0.4}
-          onEndReached={this.handleLoadMore.bind(this)}
-        />
+            data={this.state.data}
+            renderItem={this._renderItem}
+            keyExtractor={item => item.ID}
+            //ListFooterComponent={this.renderFooter.bind(this)}
+            //ListHeaderComponent={this.renderHeader.bind(this)}
+            // refreshControl={
+            //   <RefreshControl
+            //     refreshing={this.state.isRefreshing}
+            //     onRefresh={this.onRefresh.bind(this)}
+            //   />
+            // }
+            //onEndReachedThreshold={0.4}
+            // onEndReached={this.handleLoadMore.bind(this)}
+          />
+        </ScrollView>
       </SafeAreaView>
     );
   }

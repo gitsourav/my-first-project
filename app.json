@@ -24,8 +24,12 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sourav.asifund"
     },
-    "description": ""
+    "android": {
+      "package": "com.sourav.asifund"
+    },
+    "description": "V1"
   }
 }

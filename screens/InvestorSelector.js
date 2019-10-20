@@ -5,16 +5,17 @@ import {
   Text,
   SafeAreaView,
   StyleSheet,
-  ActivityIndicator
+  ActivityIndicator,
+  AsyncStorage
 } from "react-native";
 import ModalDropdown from "react-native-modal-dropdown";
 import { Button } from "react-native-elements";
-import { AsyncStorage } from "react-native";
+import * as AsyncStore from "../utility/util";
+
 console.log("here");
 class InvestorSelector extends Component {
   constructor(props) {
     super(props);
-    this.checkIsFirstTime();
     this.state = {
       showInvestorType: false,
       showLanguage: false,
@@ -22,27 +23,26 @@ class InvestorSelector extends Component {
       isloading: true
     };
   }
-  async checkIsFirstTime() {
-    try {
-      const value = await AsyncStorage.getItem("IsFirstTimeUser");
-      if (value !== null) {
-        console.log(value);
-        if (value == "false") {
-          this.props.navigation.navigate("Home");
-        } else {
-          this.setState({
-            isloading: false
-          });
-        }
-        // value previously stored
-      }
-    } catch (e) {
-      // error reading value
-      alert("Error getting data from Async Storage");
+  componentWillMount() {
+    const { params } = this.props.navigation.state;
+    if (params && params.fromSetting) {
+      this.setState({
+        isloading: false
+      });
+    } else {
+      this._bootstrapAsync();
     }
-    //console.log(this.getData("IsFirstTimeUser"));
-    console.log("afsaf");
   }
+  _bootstrapAsync = async () => {
+    const isFirstTime = await AsyncStorage.getItem("IsFirstTimeUser");
+    if (isFirstTime == "false") {
+      this.props.navigation.navigate("Home");
+    } else {
+      this.setState({
+        isloading: false
+      });
+    }
+  };
   _renderRow = (option, index, isSelected) => {
     return (
       <View style={{ padding: 8, fontSize: 20 }}>
@@ -66,29 +66,10 @@ class InvestorSelector extends Component {
     this.setState({
       allChecked: true
     });
-    this.storeData("IsFirstTimeUser", "false");
+    AsyncStore._setData("IsFirstTimeUser", "false");
+    //this.storeData("IsFirstTimeUser", "false");
   };
-  storeData = async (key, value) => {
-    try {
-      await AsyncStorage.setItem(key, value);
-    } catch (e) {
-      // saving error
-      alert("Error getting data from Async Storage");
-    }
-  };
-  getData = async key => {
-    try {
-      const value = await AsyncStorage.getItem(key);
-      if (value !== null) {
-        console.log(value);
-        return value;
-        // value previously stored
-      }
-    } catch (e) {
-      // error reading value
-      alert("Error getting data from Async Storage");
-    }
-  };
+
   render() {
     console.log("Renderkalfkasdf");
     if (this.state.isloading) {
