@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import * as Constants from "../components/Constants";
+import * as Settings from "../components/globalSettings";
 import {
   View,
   FlatList,
@@ -41,12 +42,33 @@ class FundList extends Component {
   }
   getFundData = page => {
     //console.log(page);
+    const country = "Singapore";
+    const investorType = "investor";
+
     const inputParam = {
-      ...Constants.PARAM_GETFUND,
       top: 100,
-      skip: Number.parseInt(page * 100)
+      skip: Number.parseInt(page * 100),
+      filters: "{}",
+      showHistoricData: false,
+      displayFundsByCategories: "False",
+      countries: JSON.stringify(Settings.countries[country].countries),
+      countryIds: JSON.stringify(Settings.countries[country].countryIds),
+      fundRanges: JSON.stringify(
+        Settings.countries[country].investorTypes[investorType].fundRanges
+      ),
+      fundRangeIds: JSON.stringify(
+        Settings.countries[country].investorTypes[investorType].fundRangeIds
+      ),
+      investorTypes: JSON.stringify(
+        Settings.countries[country].investorTypes[investorType].investorTypes
+      ),
+      investorTypeIds: JSON.stringify(
+        Settings.countries[country].investorTypes[investorType].investorTypeIds
+      ),
+      footnoteTypesIds: "[]"
     };
-    //console.log(inputParam);
+
+    console.log(inputParam);
     this.setState({ isLoading: true });
     fetch(
       "https://www.aberdeenstandard.com/en/uk/adviser/funds/funds/fundsajax",

@@ -34,8 +34,10 @@ class InvestorSelector extends Component {
     }
   }
   _bootstrapAsync = async () => {
-    const isFirstTime = await AsyncStorage.getItem("IsFirstTimeUser");
-    if (isFirstTime == "false") {
+    const isFirstTime = await AsyncStore._retrieveData("IsFirstTimeUser");
+    console.log("Is first time user check");
+    console.log("Is first time user " + isFirstTime);
+    if (isFirstTime == "No") {
       this.props.navigation.navigate("Home");
     } else {
       this.setState({
@@ -66,7 +68,7 @@ class InvestorSelector extends Component {
     this.setState({
       allChecked: true
     });
-    AsyncStore._setData("IsFirstTimeUser", "false");
+    AsyncStore._setData("IsFirstTimeUser", "No");
     //this.storeData("IsFirstTimeUser", "false");
   };
 

@@ -77,7 +77,7 @@ const MainDrawer = createDrawerNavigator({
 
 const AppModalStack = createStackNavigator(
   {
-    App: MainDrawer
+    App: MainTabs
   },
   {
     mode: "modal",

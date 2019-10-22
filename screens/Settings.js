@@ -1,6 +1,9 @@
 import React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, AsyncStorage } from "react-native";
 import { ListItem } from "react-native-elements";
+import { _retrieveData } from "../utility/util";
+import { normalizeUnits } from "moment";
+
 //https://ide.appitr.com/ide/2216-lonely-addition
 
 const ORANGE = "#FF9500";
@@ -41,8 +44,16 @@ class Settings extends React.Component {
       type: "ionicon",
       backgroundColor: PURPLE,
       rightTitle: "Investor",
+      onPress: () => {}
+    },
+    {
+      title: "New User",
+      icon: "md-people",
+      type: "ionicon",
+      backgroundColor: PURPLE,
+      // rightTitle: "Val " + _retrieveData("IsFirstTimeUser").then(val => val),
       onPress: () => {
-        this.props.navigation.navigate("Home");
+        AsyncStorage.clear();
       }
     }
   ];
