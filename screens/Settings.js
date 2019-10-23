@@ -13,6 +13,7 @@ const RED = "#FF3B30";
 const GREY = "#8E8E93";
 const PURPLE = "#5856D6";
 const TEAL_BLUE = "#5AC8FA";
+const NEW_BLUE = "#5AC8FB";
 
 const siteSettings = [
   {
