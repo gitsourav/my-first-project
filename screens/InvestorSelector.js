@@ -11,6 +11,8 @@ import {
 import ModalDropdown from "react-native-modal-dropdown";
 import { Button } from "react-native-elements";
 import * as AsyncStore from "../utility/util";
+import * as Settings from "../components/globalSettings";
+import { StackActions } from "react-navigation";
 
 console.log("here");
 class InvestorSelector extends Component {
@@ -20,9 +22,16 @@ class InvestorSelector extends Component {
       showInvestorType: false,
       showLanguage: false,
       allChecked: false,
-      isloading: true
+      isloading: true,
+      countries: [],
+      investorTypes: [],
+      languages: []
     };
+    this.selectedCountry = "";
+    this.selectedInvestorType = "";
+    this.selectedLanguage = "";
   }
+
   componentWillMount() {
     const { params } = this.props.navigation.state;
     if (params && params.fromSetting) {
@@ -33,6 +42,20 @@ class InvestorSelector extends Component {
       this._bootstrapAsync();
     }
   }
+
+  componentDidMount() {
+    let countries = [];
+    Object.keys(Settings.countries).forEach(function(country) {
+      countries.push({
+        key: country,
+        value: Settings.countries[country].countryName
+      });
+    });
+    this.setState({
+      countries: countries
+    });
+  }
+
   _bootstrapAsync = async () => {
     const isFirstTime = await AsyncStore._retrieveData("IsFirstTimeUser");
     console.log("Is first time user check");
@@ -52,24 +75,47 @@ class InvestorSelector extends Component {
       </View>
     );
   };
+
   onSelect = (index, option) => {
-    this.setState({
-      showInvestorType: true
+    let investorTypes = [];
+    Object.keys(Settings.countries[option.key].investorTypes).forEach(function(
+      investorType
+    ) {
+      investorTypes.push({
+        key: investorType,
+        value:
+          Settings.countries[option.key].investorTypes[investorType].shortName
+      });
     });
-    console.log(option.value);
+    this.setState({
+      showInvestorType: true,
+      investorTypes: investorTypes
+    });
+    this.selectedCountry = option.key;
   };
   onSelectInvestorType = (index, option) => {
-    this.setState({
-      showLanguage: true
+    let languages = [];
+    Settings.countries[this.selectedCountry].languages.forEach(function(
+      language
+    ) {
+      languages.push({
+        key: language.languageCode,
+        value: language.englishName
+      });
     });
+    this.setState({
+      showLanguage: true,
+      languages: languages
+    });
+    this.selectedInvestorType = option.key;
   };
 
   onSelectLanguage = (index, option) => {
     this.setState({
       allChecked: true
     });
+    this.selectedLanguage = option.key;
     AsyncStore._setData("IsFirstTimeUser", "No");
-    //this.storeData("IsFirstTimeUser", "false");
   };
 
   render() {
@@ -105,10 +151,7 @@ class InvestorSelector extends Component {
                 backgroundColor: "white",
                 borderRadius: 8
               }}
-              options={[
-                { key: "option 1", value: "asf" },
-                { key: "asd", value: "option 2" }
-              ]}
+              options={this.state.countries}
               renderRow={this._renderRow}
               renderButtonText={option => option.value}
               onSelect={this.onSelect}
@@ -129,7 +172,6 @@ class InvestorSelector extends Component {
                 }}
                 textStyle={{
                   fontSize: 20,
-                  //height: 40,
                   padding: 8,
                   textAlign: "center"
                 }}
@@ -140,10 +182,7 @@ class InvestorSelector extends Component {
                   backgroundColor: "white",
                   borderRadius: 8
                 }}
-                options={[
-                  { key: "option 1", value: "asf" },
-                  { key: "asd", value: "option 2" }
-                ]}
+                options={this.state.investorTypes}
                 renderRow={this._renderRow}
                 renderButtonText={option => option.value}
                 onSelect={this.onSelectInvestorType}
@@ -175,23 +214,31 @@ class InvestorSelector extends Component {
                   backgroundColor: "white",
                   borderRadius: 8
                 }}
-                options={[
-                  { key: "option 1", value: "asf" },
-                  { key: "asd", value: "option 2" }
-                ]}
+                options={this.state.languages}
                 renderRow={this._renderRow}
                 renderButtonText={option => option.value}
                 onSelect={this.onSelectLanguage}
               />
             </View>
           )}
-          {this.state.allChecked && (
+          <View style={{ flexDirection: "row" }}>
+            {this.state.allChecked && (
+              <Button
+                sec
+                style={{ margin: 15 }}
+                title="Continue"
+                onPress={() => this.props.navigation.navigate("Home")}
+              />
+            )}
             <Button
+              type="outline"
+              buttonStyle={{ borderColor: "white" }}
               style={{ margin: 15 }}
-              title="Continue"
-              onPress={() => this.props.navigation.navigate("Home")}
+              title="Go Back"
+              titleStyle={{ color: "white" }}
+              onPress={() => this.props.navigation.navigate("Settings")}
             />
-          )}
+          </View>
         </View>
       </SafeAreaView>
     );

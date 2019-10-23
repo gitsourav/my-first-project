@@ -105,7 +105,13 @@ export const countries = {
         investorTypes: ["4", "1"]
       }
     },
-    languages: ["en"],
+    countryName: "United Kingdom",
+    languages: [
+      {
+        languageCode: "en",
+        englishName: "English"
+      }
+    ],
     countries: ["R0JS"],
     countryIds: ["ezk4NjFBMjQ2LTU5NzQtNDU0Ny05MUFGLUY3QkNBNUEzNTUzRH0="],
     region: "EMEA"
@@ -131,7 +137,13 @@ export const countries = {
         investorTypes: ["4", "1"]
       }
     },
-    languages: ["en"],
+    countryName: "Singapore",
+    languages: [
+      {
+        languageCode: "en",
+        englishName: "English"
+      }
+    ],
     countries: ["U0dQ"],
     countryIds: ["e0E3RDI5NzM0LTg5NDgtNEYxNi04NjA2LTVGQTMzNjRFODYyQ30="],
     region: "Asia Pacific"
@@ -155,7 +167,13 @@ export const countries = {
         investorTypes: ["4", "2", "1"]
       }
     },
-    languages: ["zh-TW"],
+    countryName: "Taiwan",
+    languages: [
+      {
+        languageCode: "zh-TW",
+        englishName: "Taiwan"
+      }
+    ],
     countries: ["VFdO"],
     countryIds: ["ezc2QTMxNTY4LUEyOTgtNEFGNC05QkQ5LTA5NUU1NzczRTY1Mn0="],
     region: "Asia Pacific"

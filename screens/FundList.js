@@ -160,11 +160,11 @@ class FundList extends Component {
         titleStyle={{ color: "black", width: 200 }}
         subtitle={item.AssetClassName}
         subtitleStyle={{ color: "#002664" }}
-        rightTitle="Test"
+        //rightTitle="Test"
         rightTitleStyle={{
           marginTop: -30
         }}
-        rightSubtitle="Test Sub"
+        // rightSubtitle="Test Sub"
         onPress={() =>
           this.props.navigation.navigate("Details", { item: item })
         }
